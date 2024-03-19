@@ -16,7 +16,7 @@
     "start": "serve -s build",
     "prestart": "npm install -g serve",
     "local": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && xcopy /s /e /y build\\* public\\",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
