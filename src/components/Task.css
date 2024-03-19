@@ -1,0 +1,102 @@
+
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2em;
+  }
+  
+  h1 {
+    flex: 1;
+  }
+  
+  .points {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2em;
+  }
+
+  .project-header {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+  }
+
+  .task-list {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+    gap: 1em;
+  }
+
+  .task {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: .5em;
+  }
+  
+  form {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  
+  input[type="text"], textarea {
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  input[type="text"]:focus, textarea:focus {
+    border-color: #5b9dd9;
+    box-shadow: 0 0 5px rgba(91, 157, 217, 0.5);
+  }
+  
+  input[type="text"]:hover, textarea:hover {
+    background-color: #f0f0f0;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .reset{
+    background-color: #dc3545; /* Red color for reset button */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .reset:hover {
+    background-color: #bd2130; /* Darker red color on hover */
+  }
+
+  .complete {
+    background-color: #28a745; /* Green color for complete button */
+  }
+  
+  .complete:hover {
+    background-color: #218838; /* Darker green color on hover */
+  }
+  
