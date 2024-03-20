@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Popup from './Popup';
 import HappinessPopup from './HappinessPopup';
+import {useSpring, animated } from "react-spring";
 
 // import './Popup.css'
 import './Task.css'
@@ -20,6 +21,13 @@ function GoalsComponent() {
 
     const [projects, setProjects] = useState([]);
     const [newProjectName, setNewProjectName] = useState(''); // New state for form input
+
+    const pointSpring = useSpring({
+        from: { number: 0 },
+        number: points,
+        delay: 200,
+        config: { mass: 1, tension: 20, friction: 10},
+    });
 
     // Load initial data from Session Storage
     useEffect(() => {
@@ -156,7 +164,7 @@ function GoalsComponent() {
         <div class='container'>
             <h1> Be Intentional</h1>
             <div class='points'>
-                <h2>Points: {points}</h2>
+                <animated.h1>{pointSpring.number.to((number) => Math.floor(number))}</animated.h1>
                 <button class='reset' onClick={() => setPoints(0)}>Reset</button>
             </div>
             <form onSubmit={handleFormSubmit}>

@@ -11,13 +11,12 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
+    "react-spring": "^9.7.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "serve -s build",
-    "prestart": "npm install -g serve",
-    "local": "react-scripts start",
-    "build": "react-scripts build && xcopy /s /e /y build\\* public\\",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
