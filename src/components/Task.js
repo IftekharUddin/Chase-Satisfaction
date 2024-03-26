@@ -7,6 +7,41 @@ import {useSpring, animated } from "react-spring";
 import './Task.css'
 
 function GoalsComponent() {
+    const initialState = {
+        points: 0,
+        showPopup: false,
+        popupData: null,
+        showHappinessPopup: false,
+        happyData: 0,
+        lastDeletedItemState: { difficulty: 0, resistance: 0 },
+        projects: [],
+        newProjectName: '',
+    };
+    
+    // Reducer function: Decides what to do based on the action
+    function reducer(state, action) {
+        switch (action.type) {
+        case 'COMPLETE_TASK':
+            // Add points and possibly show popup if points exceed a threshold
+            return {
+            ...state,
+            points: state.points + action.payload, // payload is how much points to add
+            showPopup: state.points + action.payload >= 10,
+            };
+        case 'RESET':
+            // Reset points and hide popup
+            return {
+            ...state,
+            points: 0,
+            showPopup: false,
+            };
+        default:
+            return state;
+        }
+    }
+
+    const [state, dispatch] = useReducer(reducer, initialState);
+
     const [points , setPoints] = useState(0);
     const [showPopup, setShowPopup] = useState(false);
     const [popupData, setPopupData] = useState(null);
@@ -61,8 +96,11 @@ function GoalsComponent() {
 
     // Function to remove a project
     const completeProject = (projectId) => {
-        const updatedProjects = projects.filter(project => project.id !== projectId);
-        setProjects(updatedProjects);
+        setHappinessPopup(true);
+        deleteSubtask(projectId, null);
+        const newProjects = projects.filter(project => project.id !== projectId);
+        setProjects(newProjects);
+        return {newProjects};
     };
 
     // Function to add a subtask to a specific project
@@ -120,13 +158,18 @@ function GoalsComponent() {
     const calculatePoints = () => {
         const difficulty = parseFloat(lastDeletedItemState.difficulty);
         const resistance = parseFloat(lastDeletedItemState.resistance);
+        const taskLevel = parseFloat(lastDeletedItemState.taskLevel);
         const satisfaction = happyData;
 
-        const resistanceModifiedPoints = difficulty * resistance;
-        const satisfactionModifiedPoints = difficulty * satisfaction;
-        const completedPoints = points + difficulty + resistanceModifiedPoints + satisfactionModifiedPoints;
+        const resistancePoints = difficulty * resistance;
+        const satisfactionPoints = difficulty * satisfaction;
+        const newPoints = resistancePoints + satisfactionPoints;
+        const compoundedPoints = newPoints * taskLevel;
 
-        console.log(`${points} + ${difficulty} + ${resistanceModifiedPoints} + ${satisfactionModifiedPoints} = ${completedPoints}`);
+
+        const completedPoints = points + compoundedPoints;
+
+        console.log(`${points} + ${difficulty} + ${resistancePoints} + ${satisfactionPoints} = ${completedPoints}`);
         setPoints(completedPoints);
         setHappyData(0);
         setLastItemState();
@@ -137,17 +180,27 @@ function GoalsComponent() {
     const deleteSubtask = (projectId, subtaskId) => {
         const updatedProjects = projects.map(project => {
             if (project.id === projectId) {
-                // Filter out the subtask to delete
-                const subtask = project.subtasks.find(subtask => subtask.id===subtaskId);
+                if (subtaskId === null) {
+                    const deletedProject = {
+                        difficulty: project.difficulty,
+                        resistance: project.resistance,
+                        taskLevel: 2
+                    }
+                    setLastItemState(deletedProject);
+                } else {
+                    // Filter out the subtask to delete
+                    const subtask = project.subtasks.find(subtask => subtask.id===subtaskId);
 
-                const deletedItemStats = {
-                    difficulty: subtask.difficulty,
-                    resistance: subtask.resistance
-                };
-
-                setLastItemState(deletedItemStats);
-                const updatedSubtasks = project.subtasks.filter(subtask => subtask.id !== subtaskId);
-                return { ...project, subtasks: updatedSubtasks };
+                    const deletedTask = {
+                        difficulty: subtask.difficulty,
+                        resistance: subtask.resistance,
+                        taskLevel: 1
+                    };
+                    
+                    const updatedSubtasks = project.subtasks.filter(subtask => subtask.id !== subtaskId);
+                    setLastItemState(deletedTask);
+                    return { ...project, subtasks: updatedSubtasks };
+                }
             }
             return project;
         });
@@ -161,11 +214,11 @@ function GoalsComponent() {
     };
 
     return (
-        <div class='container'>
+        <div className='container'>
             <h1> Be Intentional</h1>
-            <div class='points'>
+            <div className='points'>
                 <animated.h1>{pointSpring.number.to((number) => Math.floor(number))}</animated.h1>
-                <button class='reset' onClick={() => setPoints(0)}>Reset</button>
+                <button className='reset' onClick={() => setPoints(0)}>Reset</button>
             </div>
             <form onSubmit={handleFormSubmit}>
                 <input
@@ -183,18 +236,18 @@ function GoalsComponent() {
                 <div key={project.id} className="project">
                     <div className="project-header">
                         <h2>{project.name}</h2>
-                        <button class='complete' onClick={() => completeProject(project.id)} style={{ marginLeft: '10px' }}>
+                        <button className='complete' onClick={() => completeProject(project.id)} style={{ marginLeft: '10px' }}>
                             Complete Project
                         </button>
                     </div>
-                    <ul class='task-list'>
+                    <ul className='task-list'>
                         {project.subtasks.map(subtask => (
-                            <li class='task' key={subtask.id}>
+                            <li className='task' key={subtask.id}>
                             {subtask.name}
-                            <button class='complete' onClick={() => completeSubtask(project.id, subtask.id)}>
+                            <button className='complete' onClick={() => completeSubtask(project.id, subtask.id)}>
                                 Complete
                             </button>
-                            <button class='reset' onClick={() => deleteSubtask(project.id, subtask.id)}>
+                            <button className='reset' onClick={() => deleteSubtask(project.id, subtask.id)}>
                                 Delete
                             </button>
                             </li>
